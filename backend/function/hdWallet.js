@@ -12,18 +12,18 @@ module.exports.createPhrase = function () {
   return mnemonic;
 };
 
-// module.exports.confirmPhrase = function(phrase, cPhrase) {
-//     if(phrase === cPhrase) {
-//         return true
-//     }
-//     return false
-// }
+module.exports.confirmPhrase = function (phrase, cPhrase) {
+  if (phrase === cPhrase) {
+    return true;
+  }
+  return false;
+};
 
 module.exports.createWallet = function (phrase) {
   // console.log("seed = " + bip39.mnemonicToSeed(phrase).toString())
   var valid = Mnemonic.isValid(phrase);
   if (valid == false) {
-    return "Invalid mnemonic";
+    return false;
   }
   const hdkey = HDkey.fromMasterSeed(phrase);
   const addrnode = hdkey.derive("m/44'/0'/0'/0");
@@ -46,7 +46,7 @@ module.exports.createWallet = function (phrase) {
 module.exports.recoverWallet = function (rPhrase) {
   var valid = Mnemonic.isValid(rPhrase);
   if (valid == false) {
-    return "Invalid mnemonic";
+    return false;
   }
   const hdkey = HDkey.fromMasterSeed(bip39.mnemonicToSeed(rPhrase).toString());
   const addrnode = hdkey.derive("m/44'/0'/0'/0");
