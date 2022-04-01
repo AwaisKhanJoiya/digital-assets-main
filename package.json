@@ -5,8 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "test",
-    "start": "node backend/index.js",
-    "build": "react-scripts build"
+    "start": "node backend/index.js"
   },
   "author": "clearshine",
   "license": "ISC",
