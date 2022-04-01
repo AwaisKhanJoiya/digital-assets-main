@@ -1,0 +1,21 @@
+{
+  "name": "hdwallet",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "test",
+    "start": "node backend/index.js",
+    "build": "react-scripts build"
+  },
+  "author": "clearshine",
+  "license": "ISC",
+  "dependencies": {
+    "@alch/alchemy-web3": "^1.2.5",
+    "bip39": "^3.0.4",
+    "bitcore-mnemonic": "^8.25.25",
+    "ethers": "^5.5.4",
+    "express": "^4.17.3",
+    "hdkey": "^2.0.1"
+  }
+}
