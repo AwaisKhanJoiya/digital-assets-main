@@ -35,75 +35,192 @@ router.get(
   catchAsync(async (req, res) => {
     phrase = hdWallet.createPhrase();
     if (phrase) {
-      res.status(httpStatus.CREATED).send(phrase);
+      res
+        .status(httpStatus.CREATED)
+        .json({ status: true, statusCode: httpStatus.CREATED, phrase });
     } else {
-      throw new ApiError(
-        httpStatus.INTERNAL_SERVER_ERROR,
-        "We are facing some error, Please try again"
-      );
+      res
+        .status(httpStatus.INTERNAL_SERVER_ERROR)
+        .send(
+          new ApiError(
+            httpStatus.INTERNAL_SERVER_ERROR,
+            "We are facing some error, Please try again"
+          )
+        );
     }
   })
 );
 
 router.get("/hdWallet/confirmPhrase", function (req, res) {
   if (hdWallet.confirmPhrase(phrase, req.query.phrase)) {
-    res.status(httpStatus.OK).send("true");
+    res.status(httpStatus.OK).json({ status: true, statusCode: httpStatus.OK });
   } else {
-    throw new ApiError(httpStatus.NOT_FOUND, "Invalid mnemonic");
+    res
+      .status(httpStatus.NOT_FOUND)
+      .send(new ApiError(httpStatus.NOT_FOUND, "Invalid mnemonic"));
   }
 });
 
 router.get("/hdWallet/createWallet", (req, res) => {
   const addr = hdWallet.createWallet(req.query.phrase);
   if (addr) {
-    res.status(httpStatus.CREATED).send(addr);
+    res
+      .status(httpStatus.CREATED)
+      .json({ status: true, statusCode: httpStatus.CREATED, address: addr });
   } else {
-    throw new ApiError(httpStatus.NOT_FOUND, "Invalid mnemonic");
+    res
+      .status(httpStatus.NOT_FOUND)
+      .send(new ApiError(httpStatus.NOT_FOUND, "Invalid mnemonic"));
   }
 });
 
 router.get("/hdWallet/recoverWallet", async (req, res) => {
   const addr = hdWallet.recoverWallet(req.query.phrase);
   if (addr) {
-    res.status(httpStatus.CREATED).send(addr);
+    res
+      .status(httpStatus.CREATED)
+      .json({ status: true, statusCode: httpStatus.CREATED, address: addr });
   } else {
-    throw new ApiError(httpStatus.NOT_FOUND, "Invalid mnemonic");
+    res
+      .status(httpStatus.NOT_FOUND)
+      .send(new ApiError(httpStatus.NOT_FOUND, "Invalid mnemonic"));
   }
 });
 
 router.get("/token/getBlockNumber", async (req, res) => {
   let bn = await tokenList.getBlockNumber();
-  res.send(bn.toString());
+  if (bn) {
+    res.status(httpStatus.FOUND).json({
+      status: true,
+      statusCode: httpStatus.FOUND,
+      blockNumber: bn.toString(),
+    });
+  } else {
+    res
+      .status(httpStatus.NOT_FOUND)
+      .send(
+        new ApiError(
+          httpStatus.NOT_FOUND,
+          "We are facing some error, please try again"
+        )
+      );
+  }
 });
 
 router.get("/token/getTokenName", async (req, res) => {
   let tokenName = await tokenList.getTokenName(req.query.address);
-  res.send(tokenName);
+  if (tokenName) {
+    res
+      .status(httpStatus.FOUND)
+      .json({ status: true, statusCode: httpStatus.FOUND, tokenName });
+  } else {
+    res
+      .status(httpStatus.NOT_FOUND)
+      .send(
+        new ApiError(
+          httpStatus.NOT_FOUND,
+          "We are facing some error, please try again"
+        )
+      );
+  }
 });
 
 router.get("/token/getTokenSymbol", async (req, res) => {
   let tokenSymbol = await tokenList.getTokenSymbol(req.query.address);
-  res.send(tokenSymbol);
+  if (tokenSymbol) {
+    res
+      .status(httpStatus.FOUND)
+      .json({ status: true, statusCode: httpStatus.FOUND, tokenSymbol });
+  } else {
+    res
+      .status(httpStatus.NOT_FOUND)
+      .send(
+        new ApiError(
+          httpStatus.NOT_FOUND,
+          "We are facing some error, please try again"
+        )
+      );
+  }
 });
 
 router.get("/token/getPriceETHV2", async (req, res) => {
   let price = await tokenList.getPriceETHV2(req.query.address);
-  res.send(price.toString());
+  if (price) {
+    res.status(httpStatus.FOUND).json({
+      status: true,
+      statusCode: httpStatus.FOUND,
+      price: price.toString(),
+    });
+  } else {
+    res
+      .status(httpStatus.NOT_FOUND)
+      .send(
+        new ApiError(
+          httpStatus.NOT_FOUND,
+          "We are facing some error, please try again"
+        )
+      );
+  }
 });
 
 router.get("/token/getPriceUSDV2", async (req, res) => {
   let price = await tokenList.getPriceUSDV2(req.query.address);
-  res.send(price.toString());
+  if (price) {
+    res.status(httpStatus.FOUND).json({
+      status: true,
+      statusCode: httpStatus.FOUND,
+      price: price.toString(),
+    });
+  } else {
+    res
+      .status(httpStatus.NOT_FOUND)
+      .send(
+        new ApiError(
+          httpStatus.NOT_FOUND,
+          "We are facing some error, please try again"
+        )
+      );
+  }
 });
 
 router.get("/token/getPriceETHV3", async (req, res) => {
   let price = await tokenList.getPriceETHV3(req.query.address);
-  res.send(price.toString());
+  if (price) {
+    res.status(httpStatus.FOUND).json({
+      status: true,
+      statusCode: httpStatus.FOUND,
+      price: price.toString(),
+    });
+  } else {
+    res
+      .status(httpStatus.NOT_FOUND)
+      .send(
+        new ApiError(
+          httpStatus.NOT_FOUND,
+          "We are facing some error, please try again"
+        )
+      );
+  }
 });
 
 router.get("/token/getPriceUSDV3", async (req, res) => {
   let price = await tokenList.getPriceUSDV3(req.query.address);
-  res.send(price.toString());
+  if (price) {
+    res.status(httpStatus.FOUND).json({
+      status: true,
+      statusCode: httpStatus.FOUND,
+      price: price.toString(),
+    });
+  } else {
+    res
+      .status(httpStatus.NOT_FOUND)
+      .send(
+        new ApiError(
+          httpStatus.NOT_FOUND,
+          "We are facing some error, please try again"
+        )
+      );
+  }
 });
 
 app.use(cors());
