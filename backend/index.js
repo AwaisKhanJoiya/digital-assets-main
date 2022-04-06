@@ -2,6 +2,7 @@ const hdWallet = require("./function/hdWallet");
 const httpStatus = require("http-status");
 const tokenListFunc = require("./function/tokenListFunc.js");
 const ApiError = require("./utils/ApiError");
+const actionFunc = require("./function/action.js");
 const express = require("express");
 const catchAsync = require("./utils/catchAsync");
 const morgan = require("./config/morgan");
@@ -10,6 +11,7 @@ const { errorConverter, errorHandler } = require("./middlewares/error");
 let cors = require("cors");
 
 const tokenList = new tokenListFunc();
+const action = new actionFunc();
 
 const router = express.Router();
 const app = express();
@@ -221,6 +223,49 @@ router.get("/token/getPriceUSDV3", async (req, res) => {
         )
       );
   }
+});
+
+router.get("/action/getBalance", async (req, res) => {
+  let balance = await action.getBalance(req.query.address);
+  if (balance) {
+    res.status(httpStatus.OK).json({
+      status: true,
+      statusCode: httpStatus.OK,
+      balance: balance.toString(),
+    });
+  } else {
+    res
+      .status(httpStatus.INTERNAL_SERVER_ERROR)
+      .send(
+        new ApiError(
+          httpStatus.INTERNAL_SERVER_ERROR,
+          "We are facing some error, please try again"
+        )
+      );
+  }
+});
+
+router.get("/action/transferFund", async (req, res) => {
+  let result = await action.transferFund(req.query.address, req.query.amount);
+
+  if (result) {
+    res.status(httpStatus.OK).json({
+      status: true,
+      statusCode: httpStatus.OK,
+      result,
+    });
+  } else {
+    res
+      .status(httpStatus.INTERNAL_SERVER_ERROR)
+      .send(
+        new ApiError(
+          httpStatus.INTERNAL_SERVER_ERROR,
+          "We are facing some error, please try again"
+        )
+      );
+  }
+  // let balance = await action.getBalance(req.query.address)
+  // res.send(balance.toString())
 });
 
 app.use(cors());
