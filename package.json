@@ -13,6 +13,7 @@
     "@alch/alchemy-web3": "^1.2.5",
     "bip39": "^3.0.4",
     "bitcore-mnemonic": "^8.25.25",
+    "ethereumjs-tx": "^2.1.2",
     "ethers": "^5.5.4",
     "express": "^4.17.3",
     "hdkey": "^2.0.1",
