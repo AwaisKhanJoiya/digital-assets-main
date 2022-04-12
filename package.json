@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "test",
-    "start": "pm2 start ecosystem.config.json --no-daemon"
+    "start": "node ./backend/index.js"
   },
   "author": "clearshine",
   "license": "ISC",

@@ -1,8 +1,8 @@
 const hdWallet = require("./function/hdWallet");
 const httpStatus = require("http-status");
 const tokenListFunc = require("./function/tokenListFunc.js");
-const ApiError = require("./utils/ApiError");
 const actionFunc = require("./function/action.js");
+const ApiError = require("./utils/ApiError");
 const express = require("express");
 const catchAsync = require("./utils/catchAsync");
 const morgan = require("./config/morgan");
@@ -12,7 +12,6 @@ let cors = require("cors");
 
 const tokenList = new tokenListFunc();
 const action = new actionFunc();
-
 const router = express.Router();
 const app = express();
 const PORT = process.env.PORT || 8000;
@@ -53,15 +52,15 @@ router.get(
   })
 );
 
-router.get("/hdWallet/confirmPhrase", function (req, res) {
-  if (hdWallet.confirmPhrase(phrase, req.query.phrase)) {
-    res.status(httpStatus.OK).json({ status: true, statusCode: httpStatus.OK });
-  } else {
-    res
-      .status(httpStatus.NOT_FOUND)
-      .send(new ApiError(httpStatus.NOT_FOUND, "Invalid mnemonic"));
-  }
-});
+// router.get("/hdWallet/confirmPhrase", function (req, res) {
+//   if (hdWallet.confirmPhrase(phrase, req.query.phrase)) {
+//     res.status(httpStatus.OK).json({ status: true, statusCode: httpStatus.OK });
+//   } else {
+//     res
+//       .status(httpStatus.NOT_FOUND)
+//       .send(new ApiError(httpStatus.NOT_FOUND, "Invalid mnemonic"));
+//   }
+// });
 
 router.get("/hdWallet/createWallet", (req, res) => {
   const addr = hdWallet.createWallet(req.query.phrase);
@@ -228,17 +227,17 @@ router.get("/token/getPriceUSDV3", async (req, res) => {
 router.get("/action/getBalance", async (req, res) => {
   let balance = await action.getBalance(req.query.address);
   if (balance) {
-    res.status(httpStatus.OK).json({
+    res.status(httpStatus.FOUND).json({
       status: true,
-      statusCode: httpStatus.OK,
+      statusCode: httpStatus.FOUND,
       balance: balance.toString(),
     });
   } else {
     res
-      .status(httpStatus.INTERNAL_SERVER_ERROR)
+      .status(httpStatus.NOT_FOUND)
       .send(
         new ApiError(
-          httpStatus.INTERNAL_SERVER_ERROR,
+          httpStatus.NOT_FOUND,
           "We are facing some error, please try again"
         )
       );
@@ -247,25 +246,22 @@ router.get("/action/getBalance", async (req, res) => {
 
 router.get("/action/transferFund", async (req, res) => {
   let result = await action.transferFund(req.query.address, req.query.amount);
-
   if (result) {
-    res.status(httpStatus.OK).json({
+    res.status(httpStatus.FOUND).json({
       status: true,
-      statusCode: httpStatus.OK,
-      result,
+      statusCode: httpStatus.FOUND,
+      result: result,
     });
   } else {
     res
-      .status(httpStatus.INTERNAL_SERVER_ERROR)
+      .status(httpStatus.NOT_FOUND)
       .send(
         new ApiError(
-          httpStatus.INTERNAL_SERVER_ERROR,
+          httpStatus.NOT_FOUND,
           "We are facing some error, please try again"
         )
       );
   }
-  // let balance = await action.getBalance(req.query.address)
-  // res.send(balance.toString())
 });
 
 app.use(cors());

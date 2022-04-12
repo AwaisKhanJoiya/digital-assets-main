@@ -33,6 +33,8 @@ module.exports = function() {
                 }
                 let balance = web3.utils.fromWei(result, "ether");
                 console.log(balance + " ETH");
+                console.log(reciever);
+                console.log(amountToSend);
                 if(balance < amountToSend) {
                     console.log('insufficient funds');
                     return reject();

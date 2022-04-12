@@ -20,7 +20,11 @@ module.exports.confirmPhrase = function (phrase, cPhrase) {
 };
 
 module.exports.createWallet = function (phrase) {
-  // console.log("seed = " + bip39.mnemonicToSeed(phrase).toString())
+  // console.log( await bip39.mnemonicToSeed(phrase))
+  let mnemonicWallet = ethers.Wallet.fromMnemonic(phrase);
+  console.log(mnemonicWallet.address);
+  console.log(mnemonicWallet._signingKey().privateKey);
+
   var valid = Mnemonic.isValid(phrase);
   if (valid == false) {
     return false;
@@ -28,9 +32,11 @@ module.exports.createWallet = function (phrase) {
   const hdkey = HDkey.fromMasterSeed(phrase);
   const addrnode = hdkey.derive("m/44'/0'/0'/0");
   // const masterPrivateKey = hdkey.privateExtendedKey
+
   const masterPrivateKey = hdkey.privateKey.toString("hex");
-  console.log(masterPrivateKey);
+  // console.log(masterPrivateKey);
   const step1 = addrnode._publicKey;
+  // console.log("address = " + step1);
   const step2 = createHash("sha256").update(step1).digest();
   const step3 = createHash("rmd160").update(step2).digest();
 
@@ -40,7 +46,7 @@ module.exports.createWallet = function (phrase) {
   const step9 = bs58check.encode(step4);
   console.log("Base58Check: " + step9);
 
-  return step9;
+  return mnemonicWallet.address;
 };
 
 module.exports.recoverWallet = function (rPhrase) {
@@ -48,7 +54,7 @@ module.exports.recoverWallet = function (rPhrase) {
   if (valid == false) {
     return false;
   }
-  const hdkey = HDkey.fromMasterSeed(bip39.mnemonicToSeed(rPhrase).toString());
+  const hdkey = HDkey.fromMasterSeed(rPhrase);
   const addrnode = hdkey.derive("m/44'/0'/0'/0");
   const masterPrivateKey = hdkey.privateKey.toString("hex");
   console.log(masterPrivateKey);
