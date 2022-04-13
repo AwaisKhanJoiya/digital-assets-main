@@ -151,7 +151,7 @@ router.get("/token/getPriceETHV2", async (req, res) => {
       status: true,
       statusCode: httpStatus.FOUND,
       price: price.toString(),
-    }); 
+    });
   } else {
     res
       .status(httpStatus.NOT_FOUND)
@@ -225,14 +225,25 @@ router.get("/token/getPriceUSDV3", async (req, res) => {
 });
 
 router.get("/action/getBalance", async (req, res) => {
-  let balance = await action.getBalance(req.query.address);
-  if (balance) {
-    res.status(httpStatus.FOUND).json({
-      status: true,
-      statusCode: httpStatus.FOUND,
-      balance: balance.toString(),
-    });
-  } else {
+  try {
+    let balance = await action.getBalance(req.query.address);
+    if (balance) {
+      res.status(httpStatus.FOUND).json({
+        status: true,
+        statusCode: httpStatus.FOUND,
+        balance: balance.toString(),
+      });
+    } else {
+      res
+        .status(httpStatus.NOT_FOUND)
+        .send(
+          new ApiError(
+            httpStatus.NOT_FOUND,
+            "We are facing some error, please try again"
+          )
+        );
+    }
+  } catch (err) {
     res
       .status(httpStatus.NOT_FOUND)
       .send(
