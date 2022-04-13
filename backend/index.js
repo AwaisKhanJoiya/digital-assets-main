@@ -246,32 +246,33 @@ router.get("/action/getBalance", async (req, res) => {
   } catch (err) {
     res
       .status(httpStatus.NOT_FOUND)
-      .send(
-        new ApiError(
-          httpStatus.NOT_FOUND,
-          "We are facing some error, please try again"
-        )
-      );
+      .send(new ApiError(httpStatus.NOT_FOUND, err));
   }
 });
 
 router.get("/action/transferFund", async (req, res) => {
-  let result = await action.transferFund(req.query.address, req.query.amount);
-  if (result) {
-    res.status(httpStatus.FOUND).json({
-      status: true,
-      statusCode: httpStatus.FOUND,
-      result: result,
-    });
-  } else {
+  try {
+    let result = await action.transferFund(req.query.address, req.query.amount);
+    if (result) {
+      res.status(httpStatus.FOUND).json({
+        status: true,
+        statusCode: httpStatus.FOUND,
+        result: result,
+      });
+    } else {
+      res
+        .status(httpStatus.NOT_FOUND)
+        .send(
+          new ApiError(
+            httpStatus.NOT_FOUND,
+            "We are facing some error, please try again"
+          )
+        );
+    }
+  } catch (err) {
     res
       .status(httpStatus.NOT_FOUND)
-      .send(
-        new ApiError(
-          httpStatus.NOT_FOUND,
-          "We are facing some error, please try again"
-        )
-      );
+      .send(new ApiError(httpStatus.NOT_FOUND, err));
   }
 });
 
