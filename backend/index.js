@@ -151,7 +151,7 @@ router.get("/token/getPriceETHV2", async (req, res) => {
       status: true,
       statusCode: httpStatus.FOUND,
       price: price.toString(),
-    });
+    }); 
   } else {
     res
       .status(httpStatus.NOT_FOUND)
