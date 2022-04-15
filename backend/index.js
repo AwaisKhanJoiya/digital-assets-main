@@ -52,15 +52,15 @@ router.get(
   })
 );
 
-// router.get("/hdWallet/confirmPhrase", function (req, res) {
-//   if (hdWallet.confirmPhrase(phrase, req.query.phrase)) {
-//     res.status(httpStatus.OK).json({ status: true, statusCode: httpStatus.OK });
-//   } else {
-//     res
-//       .status(httpStatus.NOT_FOUND)
-//       .send(new ApiError(httpStatus.NOT_FOUND, "Invalid mnemonic"));
-//   }
-// });
+router.get("/hdWallet/confirmPhrase", function (req, res) {
+  if (hdWallet.confirmPhrase(phrase, req.query.phrase)) {
+    res.status(httpStatus.OK).json({ status: true, statusCode: httpStatus.OK });
+  } else {
+    res
+      .status(httpStatus.NOT_FOUND)
+      .send(new ApiError(httpStatus.NOT_FOUND, "Invalid mnemonic"));
+  }
+});
 
 router.get("/hdWallet/createWallet", (req, res) => {
   const addr = hdWallet.createWallet(req.query.phrase);
