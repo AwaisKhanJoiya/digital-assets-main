@@ -50,6 +50,10 @@ module.exports.createWallet = function (phrase) {
 };
 
 module.exports.recoverWallet = function (rPhrase) {
+  let mnemonicWallet = ethers.Wallet.fromMnemonic(phrase);
+  console.log(mnemonicWallet.address);
+  console.log(mnemonicWallet._signingKey().privateKey);
+
   var valid = Mnemonic.isValid(rPhrase);
   if (valid == false) {
     return false;
@@ -68,5 +72,5 @@ module.exports.recoverWallet = function (rPhrase) {
   const step9 = bs58check.encode(step4);
   console.log("Base58Check: " + step9);
 
-  return step9;
+  return mnemonicWallet.address;
 };

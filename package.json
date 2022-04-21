@@ -11,6 +11,7 @@
   "license": "ISC",
   "dependencies": {
     "@alch/alchemy-web3": "^1.2.5",
+    "big-number": "^2.0.0",
     "bip39": "^3.0.4",
     "bitcore-mnemonic": "^8.25.25",
     "ethereumjs-tx": "^2.1.2",

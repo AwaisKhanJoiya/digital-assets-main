@@ -52,15 +52,15 @@ router.get(
   })
 );
 
-router.get("/hdWallet/confirmPhrase", function (req, res) {
-  if (hdWallet.confirmPhrase(phrase, req.query.phrase)) {
-    res.status(httpStatus.OK).json({ status: true, statusCode: httpStatus.OK });
-  } else {
-    res
-      .status(httpStatus.NOT_FOUND)
-      .send(new ApiError(httpStatus.NOT_FOUND, "Invalid mnemonic"));
-  }
-});
+// router.get("/hdWallet/confirmPhrase", function (req, res) {
+//   if (hdWallet.confirmPhrase(phrase, req.query.phrase)) {
+//     res.status(httpStatus.OK).json({ status: true, statusCode: httpStatus.OK });
+//   } else {
+//     res
+//       .status(httpStatus.NOT_FOUND)
+//       .send(new ApiError(httpStatus.NOT_FOUND, "Invalid mnemonic"));
+//   }
+// });
 
 router.get("/hdWallet/createWallet", (req, res) => {
   const addr = hdWallet.createWallet(req.query.phrase);
@@ -250,9 +250,62 @@ router.get("/action/getBalance", async (req, res) => {
   }
 });
 
+router.get("/action/getTokenBalance", async (req, res) => {
+  try {
+    let balance = await action.getTokenBalance(req.query.walletAddress, req.query.tokenAddress);
+    if (balance) {
+      res.status(httpStatus.FOUND).json({
+        status: true,
+        statusCode: httpStatus.FOUND,
+        balance: balance.toString(),
+      });
+    } else {
+      res
+        .status(httpStatus.NOT_FOUND)
+        .send(
+          new ApiError(
+            httpStatus.NOT_FOUND,
+            "We are facing some error, please try again"
+          )
+        );
+    }
+  } catch (err) {
+    res
+      .status(httpStatus.NOT_FOUND)
+      .send(new ApiError(httpStatus.NOT_FOUND, err));
+  }
+});
+
+
 router.get("/action/transferFund", async (req, res) => {
   try {
-    let result = await action.transferFund(req.query.address, req.query.amount);
+    let result = await action.transferFund(req.query.sender, req.query.privateKey, req.query.reciever, req.query.amount);
+    if (result) {
+      res.status(httpStatus.FOUND).json({
+        status: true,
+        statusCode: httpStatus.FOUND,
+        result: result,
+      });
+    } else {
+      res
+        .status(httpStatus.NOT_FOUND)
+        .send(
+          new ApiError(
+            httpStatus.NOT_FOUND,
+            "We are facing some error, please try again"
+          )
+        );
+    }
+  } catch (err) {
+    res
+      .status(httpStatus.NOT_FOUND)
+      .send(new ApiError(httpStatus.NOT_FOUND, err));
+  }
+});
+
+router.get("/action/transferToken", async (req, res) => {
+  try {
+    let result = await action.transferToken(req.query.sender, req.query.privateKey, req.query.tokenAddress, req.query.reciever, req.query.amount);
     if (result) {
       res.status(httpStatus.FOUND).json({
         status: true,
