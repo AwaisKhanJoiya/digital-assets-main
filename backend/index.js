@@ -108,6 +108,27 @@ router.get("/token/getBlockNumber", async (req, res) => {
   }
 });
 
+router.get("/token/getTokenInfo", async (req, res) => {
+  let tokenName = await tokenList.getTokenName(req.query.address);
+  let tokenSymbol = await tokenList.getTokenSymbol(req.query.address);
+  let priceETH = await tokenList.getPriceETHV2(req.query.address);
+  let priceUSD = await tokenList.getPriceUSDV2(req.query.address);
+  if (tokenName) {
+    res
+      .status(httpStatus.FOUND)
+      .json({ status: true, statusCode: httpStatus.FOUND, tokenName, tokenSymbol, priceETH, priceUSD });
+  } else {
+    res
+      .status(httpStatus.NOT_FOUND)
+      .send(
+        new ApiError(
+          httpStatus.NOT_FOUND,
+          "We are facing some error, please try again"
+        )
+      );
+  }
+});
+
 router.get("/token/getTokenName", async (req, res) => {
   let tokenName = await tokenList.getTokenName(req.query.address);
   if (tokenName) {
