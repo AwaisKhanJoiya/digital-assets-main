@@ -7,8 +7,13 @@ const uri = `https://eth-mainnet.alchemyapi.io/v2/${API_KEY}`;
 const { createAlchemyWeb3 } = require("@alch/alchemy-web3");
 const web3 = createAlchemyWeb3(uri);
 
-module.exports = function() {
+module.exports = function() { 
 
+
+
+
+
+    
     this.getBlockNumber = async function() {
         let blockNumber = await web3.eth.getBlockNumber();
         return blockNumber;
