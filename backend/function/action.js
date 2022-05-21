@@ -1,35 +1,44 @@
-const Web3 = require('web3');
+const Web3 = require("web3");
 const path = require("path");
-const fs = require('fs');
-const EthereumTx = require('ethereumjs-tx').Transaction;
-const axios = require('axios');
-const BigNumber = require('big-number');
-var Tx = require('ethereumjs-tx');
+const fs = require("fs");
+const EthereumTx = require("ethereumjs-tx").Transaction;
+const axios = require("axios");
+const BigNumber = require("big-number");
+var Tx = require("ethereumjs-tx");
 
-const web3 = new Web3(new Web3.providers.HttpProvider('https://rinkeby.infura.io/v3/ca05ad2cb2e449d19c2adb6bb0385702'));
+const web3 = new Web3(
+  new Web3.providers.HttpProvider(
+    "https://rinkeby.infura.io/v3/ca05ad2cb2e449d19c2adb6bb0385702"
+  )
+);
 
 module.exports = function () {
   this.getBalance = async function (address) {
     // let balance = await web3.eth.getBalance(address)
     // console.log(balance)
     // return balance
-    try {
-      return new Promise((resolve, reject) => {
+    return new Promise((resolve, reject) => {
+      try {
         web3.eth.getBalance(address, async (err, result) => {
           if (err) {
             return reject(err);
           }
           resolve(web3.utils.fromWei(result, "ether"));
         });
-      });
-    } catch (err) {
-      throw err;
-    }
+      } catch (err) {
+        throw err.message;
+      }
+    });
   };
 
-  this.transferFund = async function (sender, privateKey, reciever, amountToSend) {
-    try {
-      return new Promise(async (resolve, reject) => {
+  this.transferFund = async function (
+    sender,
+    privateKey,
+    reciever,
+    amountToSend
+  ) {
+    return new Promise(async (resolve, reject) => {
+      try {
         // sender = "0xa42818B85F483aF3b451719A1B6CF164e1fC26ba";
         var nonce = await web3.eth.getTransactionCount(sender);
         web3.eth.getBalance(sender, async (err, result) => {
@@ -79,51 +88,64 @@ module.exports = function () {
             }
           );
         });
-      });
-    } catch (err) {
-      throw err;
-    }
+      } catch (err) {
+        throw err.message;
+      }
+    });
   };
 
   this.getTokenBalance = async function (walletAddress, tokenAddress) {
-    let tokenABI = JSON.parse(fs.readFileSync(path.resolve(__dirname, "../abi/tokenABI.json")));
+    let tokenABI = JSON.parse(
+      fs.readFileSync(path.resolve(__dirname, "../abi/tokenABI.json"))
+    );
     let tokenContract = new web3.eth.Contract(tokenABI, tokenAddress);
-    try {
-      return new Promise((resolve, reject) => {
-        tokenContract.methods.balanceOf(walletAddress).call(async(err, result) => {
-          if (err) {
-            return reject(err);
-          }
-          resolve(web3.utils.fromWei(result, "ether"));
-        })
-
-      });
-    } catch (err) {
-      throw err;
-    }
+    return new Promise((resolve, reject) => {
+      try {
+        tokenContract.methods
+          .balanceOf(walletAddress)
+          .call(async (err, result) => {
+            if (err) {
+              return reject(err);
+            }
+            resolve(web3.utils.fromWei(result, "ether"));
+          });
+      } catch (err) {
+        throw err.message;
+      }
+    });
   };
 
-  this.transferToken = async function (sender, privateKey, tokenAddress, reciever, amountToSend) {
+  this.transferToken = async function (
+    sender,
+    privateKey,
+    tokenAddress,
+    reciever,
+    amountToSend
+  ) {
     web3.eth.accounts.wallet.add(privateKey);
-    let tokenABI = JSON.parse(fs.readFileSync(path.resolve(__dirname, "../abi/tokenABI.json")));
+    let tokenABI = JSON.parse(
+      fs.readFileSync(path.resolve(__dirname, "../abi/tokenABI.json"))
+    );
     let tokenContract = new web3.eth.Contract(tokenABI, tokenAddress);
     let gasPrices = await getCurrentGasPrices();
-    
-    return new Promise(async (resolve, reject) => {
-      tokenContract.methods.transfer(reciever, BigNumber(amountToSend * 1000000000000000000)).send({
-        from: sender, 
-        // gas: 21632
-        gasLimit: 100000,
-        gasPrice: gasPrices.low * 1000000000
-      })
-      .on('transactionHash', function(hash){
-        console.log(hash);
-        resolve({ link: hash });
-        return hash;
-      });
 
-    });
-  }
+    try {
+      tokenContract.methods
+        .transfer(reciever, BigNumber(amountToSend * 1000000000000000000))
+        .send({
+          from: sender,
+          // gas: 21632
+          gasLimit: 100000,
+          gasPrice: gasPrices.low * 1000000000,
+        })
+        .on("transactionHash", function (hash) {
+          console.log(hash);
+          return hash;
+        });
+    } catch (err) {
+      err.message;
+    }
+  };
 
   async function getCurrentGasPrices() {
     try {
@@ -137,7 +159,7 @@ module.exports = function () {
       };
       return prices;
     } catch (err) {
-      throw err;
+      throw err.message;
     }
   }
 };
